@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wallet - Enviar Dinero</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .list-group-item {
+                cursor: pointer;
+            }
+
+            .selected {
+                background-color: #d4edda;
+            }
+
+            #mensaje {
+                margin-top: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+
+            <h2>Enviar Dinero</h2>
+
+
+            <div class="form-group">
+                <label>Buscar en la agenda de transferencias:</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="searchContact" 
+                    placeholder="Buscar contacto"
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                class="btn btn-primary mb-3"
+                data-toggle="modal"
+                data-target="#contactModal">
+                Agregar nuevo contacto
+            </button>
+
+            <h3>Contactos</h3>
+
+            <ul id="contactList" class="list-group">
+                <li class="list-group-item">
+                    <div class="contact-info">
+                        <span class="contact-name">John Doe</span>
+                        <span class="contact-details">CBU: 123456789, Alias: john.doe, Banco: ABC Bank</span>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="contact-info">
+                        <span class="contact-name">Jane Smith</span>
+                        <span class="contact-details">CBU: 987654321, Alias: jane.smith, Banco: XYZ Bank</span>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="form-group">
+                <label for="transferAmount">Monto a transferir</label>
+                <input 
+                    type="text"
+                    id="transferAmount"
+                    class="form-control"
+                    placeholder="Ingrese monto"
+                >
+            </div>
+
+            <button
+                type="button"
+                id="sendMoneyBtn"
+                class="btn btn-primary">
+                Enviar dinero
+            </button>
+
+            <div id="mensaje"></div>
+
+            <br><br>
+            
+            <a href="menu.html" class="btn btn-secondary">Volver al Menú Principal</a>
+        </div>
+
+        <!-- Modal -->
+<div class="modal fade"
+     id="contactModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Nuevo Contacto
+                </h5>
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Nombre y apellido</label>
+                    <input type="text"
+                           id="name"
+                           class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>CBU</label>
+                    <input type="text"
+                           id="cbu"
+                           class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Alias</label>
+                    <input type="text"
+                           id="alias"
+                           class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Banco</label>
+                    <input type="text"
+                           id="bank"
+                           class="form-control">
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    id="saveContact"
+                    class="btn btn-success">
+                    Guardar contacto
+                </button>
+
+            </div>
+
+        </div>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        if(localStorage.getItem('saldo') === null){
+            localStorage.setItem('saldo', 60000);
+        }
+
+        let contactoSeleccionado = null;
+
+        function habilitarSeleccion() {
+
+            document.querySelectorAll('#contactList li')
+                .forEach(item => {
+
+                    item.addEventListener('click', function() {
+
+                        document.querySelectorAll('#contactList li')
+                            .forEach(li => li.classList.remove('selected'));
+
+                        this.classList.add('selected');
+
+                        contactoSeleccionado =
+                            this.querySelector('span').textContent;
+                    });
+
+                });
+        }
+
+        habilitarSeleccion();
+
+        document.getElementById('saveContact')
+            .addEventListener('click', function() {
+
+                const nombre =
+                    document.getElementById('name').value;
+
+                const cbu =
+                    document.getElementById('cbu').value;
+
+                const alias =
+                    document.getElementById('alias').value;
+
+                const banco =
+                    document.getElementById('bank').value;
+
+                if(!nombre || !cbu || !alias || !banco){
+                    alert('Complete todos los campos');
+                    return;
+                }
+
+                const li =
+                    document.createElement('li');
+
+                li.className = 'list-group-item';
+
+                li.innerHTML = `
+                    <span class="contact-details">${nombre},
+                    CBU: ${cbu},
+                    Alias: ${alias},
+                    Banco: ${banco}</span>
+                `;
+
+                document
+                    .getElementById('contactList')
+                    .appendChild(li);
+
+                habilitarSeleccion();
+
+                $('#contactModal').modal('hide');
+
+                document.getElementById('name').value = '';
+                document.getElementById('cbu').value = '';
+                document.getElementById('alias').value = '';
+                document.getElementById('bank').value = '';
+            });
+
+        document.getElementById('sendMoneyBtn')
+            .addEventListener('click', function() {
+
+                const monto =
+                    Number(
+                        document.getElementById('transferAmount').value
+                    );
+
+                let saldo =
+                    Number(localStorage.getItem('saldo'));
+
+                if(!contactoSeleccionado){
+                    alert('Seleccione un contacto');
+                    return;
+                }
+
+                if(monto <= 0){
+                    alert('Ingrese un monto válido');
+                    return;
+                }
+
+                if(monto > saldo){
+                    alert('Saldo insuficiente');
+                    return;
+                }
+
+                saldo -= monto;
+
+                localStorage.setItem('saldo', saldo);
+
+                document.getElementById('mensaje')
+                    .innerHTML = `
+                    <div class="alert alert-success">
+                        Transferencia realizada con éxito a
+                        <strong>${contactoSeleccionado}</strong>.
+                        <br>
+                        Nuevo saldo: $${saldo}
+                    </div>
+                `;
+
+                let movimientos =
+                    JSON.parse(localStorage.getItem('movimientos')) || [];
+
+                movimientos.unshift({
+                    tipo: 'Transferencia enviada',
+                    detalle: contactoSeleccionado,
+                    monto: monto,
+                    fecha: new Date().toLocaleString()
+                });
+
+                localStorage.setItem(
+                    'movimientos',
+                    JSON.stringify(movimientos)
+                );
+            });
+
+    </script>
+</html>

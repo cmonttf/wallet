@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wallet - Menú Principal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        #mensaje {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Menú Principal</h2>
+
+        <div class="form-group">
+            <label for="saldo">Dinero en cuenta:</label>
+            <h3 id="saldo">$0</h3>
+        </div>
+
+        <button id="btnDepositar" class="btn btn-primary">Depositar</button>
+        <button id="btnEnviarDinero" class="btn btn-primary">Enviar Dinero</button>
+        <button id="btnMovimientos" class="btn btn-primary">Últimos Movimientos</button>
+
+        <div id="mensaje"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        if (localStorage.getItem('saldo') === null) {
+            localStorage.setItem('saldo', 60000);
+        }
+
+        $('#saldo').text('$' + localStorage.getItem('saldo'));
+
+        function redirigir(nombrePantalla, urlDestino) {
+            $('#mensaje').html(`
+                <div class="alert alert-info">
+                    Redirigiendo a ${nombrePantalla}...
+                </div>
+            `);
+
+            setTimeout(function() {
+                window.location.href = urlDestino;
+            }, 1500);
+        }
+
+        $('#btnDepositar').click(function() {
+            redirigir('Depósitos', 'deposit.html');
+        });
+
+        $('#btnEnviarDinero').click(function() {
+            redirigir('Enviar Dinero', 'sendmoney.html');
+        });
+
+        $('#btnMovimientos').click(function() {
+            redirigir('Últimos Movimientos', 'transactions.html');
+        });
+    </script>
+</body>
+</html>

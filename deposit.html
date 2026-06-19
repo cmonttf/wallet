@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wallet - Depositar</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+            body {
+            padding: 20px;
+            }
+
+            .container {
+            max-width: 400px;
+            margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Depositar</h2>
+            <form id="depositForm">
+                <div class="form-group">
+                    <label for="depositAmount">Monto a depositar:</label>
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        id="depositAmount" 
+                        placeholder="Ingresa monto"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary">Realizar depósito</button>
+            </form>
+            <a href="menu.html" class="btn btn-secondary">Volver al Menú Principal</a>
+        </div>
+
+        <div id="mensaje"></div>
+    </body>
+
+    <script>
+        // Inicializar saldo si no existe
+        if (localStorage.getItem('saldo') === null) {
+            localStorage.setItem('saldo', 60000);
+        }
+
+        document.getElementById('depositForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const monto = Number(document.getElementById('depositAmount').value);
+
+            if (monto <= 0) {
+                alert('Ingrese un monto válido');
+                return;
+            }
+
+            let saldoActual = Number(localStorage.getItem('saldo'));
+            let nuevoSaldo = saldoActual + monto;
+
+            localStorage.setItem('saldo', nuevoSaldo);
+
+            document.getElementById('mensaje').innerHTML = `
+                <div class="alert alert-success">
+                    Depósito realizado correctamente.<br>
+                    Nuevo saldo: $${nuevoSaldo}
+                </div>
+            `;
+
+            let movimientos =
+                JSON.parse(localStorage.getItem('movimientos')) || [];
+
+            movimientos.unshift({
+                tipo: 'Depósito',
+                detalle: 'Depósito en cuenta',
+                monto: monto,
+                fecha: new Date().toLocaleString()
+            });
+
+            localStorage.setItem(
+                'movimientos',
+                JSON.stringify(movimientos)
+            );
+
+            setTimeout(() => {
+                window.location.href = 'menu.html';
+            }, 1500);
+        });
+
+        
+    </script>
+</html>

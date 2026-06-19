@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wallet - Últimos Movimientos</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .fecha {
+                font-size: 12px;
+                color: gray;
+            }
+
+            .monto {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Últimos Movimientos</h2>
+
+            <ul id="movementsList" class="list-group mb-3">
+
+            </ul>
+            
+            <a href="menu.html" class="btn btn-secondary">Volver al Menú Principal</a>
+        </div>
+    </body>
+
+    <script>
+
+        const lista =
+            document.getElementById('movementsList');
+
+        const movimientos =
+            JSON.parse(localStorage.getItem('movimientos')) || [];
+
+        if (movimientos.length === 0) {
+
+            lista.innerHTML = `
+                <li class="list-group-item text-center">
+                    No existen movimientos registrados
+                </li>
+            `;
+
+        } else {
+
+            movimientos.forEach(movimiento => {
+
+                const li =
+                    document.createElement('li');
+
+                li.className = 'list-group-item';
+
+                li.innerHTML = `
+                    <strong>${movimiento.tipo}</strong><br>
+
+                    ${movimiento.detalle}<br>
+
+                    <span class="monto">
+                        $${movimiento.monto}
+                    </span>
+
+                    <div class="fecha">
+                        ${movimiento.fecha}
+                    </div>
+                `;
+
+                lista.appendChild(li);
+
+            });
+
+        }
+
+    </script>
+</html>
